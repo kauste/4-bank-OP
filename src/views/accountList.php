@@ -8,8 +8,8 @@
                 <div class="saraso-key saraso-sask-nr">Sąskaitos numeris</div>
                 <div class="saraso-key saraso-sask-likutis">Sąskaitos likutis</div>
             </div>
-<?php foreach($list as $item) : ?>
-            <form class="saraso-vertes" action="CIA REIKES KEISTI" method="post">
+<?php foreach($list as $key => $item) : ?>
+            <form class="saraso-vertes" action="<?= self::DOMAIN . '/list/' . $key?>" method="post">
                     <div class="saraso-verte saraso-varas"><?= $item['vardas'] ?></div>
                     <div class="saraso-verte saraso-pavarde"><?= $item['pavarde'] ?></div>
                     <div class="saraso-verte saraso-AK"><?= $item['asmens-kodas'] ?></div>

@@ -1,6 +1,6 @@
 <?php require __DIR__.'/top.php'?>
 <h3 class="new-account-h">Pateikite duomenis naujos sąskaitos sukūrimui.</h3>
-    <form class="new-account-form" action="" method="post">
+    <form class="new-account-form" action="#" method="post">
         <div class="new-accout-data">
             <label for="vardas">Vardas</label>
             <input type="text" name="vardas" id="" required>

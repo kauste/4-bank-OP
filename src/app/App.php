@@ -28,10 +28,13 @@ class App{
     private static function route(array $uri){
         $m = $_SERVER['REQUEST_METHOD'];
         if(count($uri) == 1 && $uri[0] == ''){
-            return (new HomeController)-> home();
+            return (new HomeController)-> home(); //?? o kodel kuriam nauja masyva, kodel netinka static funkcija?
         }
-        if(count($uri) == 1 && $uri[0] =='list'){
-            return (new AccountListController)-> list();
+        if('GET' == $m && count($uri) == 1 && $uri[0] =='list'){
+            return (new AccountListController)-> list(); 
+        }
+        if('POST' == $m && count($uri) == 2 && $uri[0] =='list'){
+            return (new AccountListController)-> deleteItem($uri[1]);
         }
         if('GET' == $m && count($uri) == 1 && $uri[0] == 'createAccount'){
             return (new CreateAccountController)->create();
@@ -45,9 +48,8 @@ class App{
         if(count($uri) == 1 && $uri[0] == 'subtract'){
             return (new SubtractController)->subtract();
         }
-        else{
-            echo 'kita';
-        }
+        return (new HomeController)-> home();//???
+        
     }
 
 }
