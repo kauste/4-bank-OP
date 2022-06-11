@@ -1,0 +1,16 @@
+{
+    "name": "vilties/4-bank-op",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Savers\\Bank\\": "src/app"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rugile",
+            "email": "rugilestasionyte@gmail.com"
+        }
+    ],
+    "require": {}
+}

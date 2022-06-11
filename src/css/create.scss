@@ -1,0 +1,44 @@
+.new-account-form{
+    margin: 80px;
+    margin-top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+.new-accout-data{
+    display: flex;
+    flex-direction: column;
+}
+.new-accout-data > label{
+    font-style: italic;
+    font-size: 20px;
+}
+.new-accout-data > input{
+    width: 250px;
+    height: 35px;
+    font-size: 18px;
+    font-style: italic;
+    padding: 10px 10px;
+    border: 2px solid #999
+}
+.new-accout-data > input:focus-visible{
+    outline: unset;
+}
+
+.new-accout-button {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    background-color: orange;
+    border:none;
+    box-shadow: 0 2px 10px #999;
+    font-size: 25px;
+    color: #fff;
+    font-weight: 600;
+    margin-top: 5px;
+    margin-left: 10px;
+}
+.new-accout-button:hover{
+    cursor: pointer;
+    background-color: rgb(209, 137, 2);
+}
