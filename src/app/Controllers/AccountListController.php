@@ -2,27 +2,31 @@
 namespace Savers\Bank\Controllers;
 use Savers\Bank\App;
 use Savers\Bank\Messages;
+use Savers\Bank\Controllers\DataBaseController;
 class AccountListController {
     public function list(){
         if(file_exists(App::CLIENTS)){
-            $list = json_decode(file_get_contents(App::CLIENTS), 1);
+            $list = (new DataBaseController) -> showAll();
         } else {
-            $list = [['Vardenis', 'Pavardenis', 'Asmens kodas', 'Saskaitos Nr', '0']];
+            $list = [[]];
+             // per if patikrinti, ar yra saskaitu views'e
         }
-        
-        return App::view('accountList', ['title'=> 'Account List', 'list' => $list, 'messages' => Messages::get()]);
+        return App::view('accountList', ['title'=> 'Account List', 'list' => $list ]);
     }
     public function deleteItem(int $id){
-        $list = json_decode(file_get_contents(App::CLIENTS), 1);
+        if(($_POST['csrf']?? '') != App::csrf()){
+            Messages::add('Ne ten pataikei', 'error');
+            return App::redirect('list');
+        }
+        $DBobj = (new DataBaseController);
+        $list = $DBobj -> showAll();
         if($list[$id]['suma'] == 0){
-            unset($list[$id]);
-            file_put_contents(App::CLIENTS, json_encode($list));
+            $DBobj -> delete($id);
+            Messages::add('Sąskaita ištrinta', 'no-error');
         }
         else {
-            Messages::add('Kliento '.$list[$id]['vardas'].' '.$list[$id]['pavarde'].' sąskaitoje yra '.$list[$id]['suma'].' eur., todėl jo sąskaita negali būti ištrinta', 'error');
+            Messages::add('KLAIDA! Kliento '.$list[$id]['vardas'].' '.$list[$id]['pavarde'].' sąskaitoje yra '.$list[$id]['suma'].' eur., todėl jo sąskaita negali būti ištrinta', 'error');
         }
-        
         return App::redirect('list');
-    }
-    
+    }  
 }

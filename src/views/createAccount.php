@@ -1,4 +1,5 @@
 <?php require __DIR__.'/top.php'?>
+<?php require __DIR__ . '/nav.php' ?>
 <h3 class="new-account-h">Pateikite duomenis naujos sąskaitos sukūrimui.</h3>
     <form class="new-account-form" action="#" method="post">
         <div class="new-accout-data">
@@ -18,5 +19,6 @@
             <input type="text" name="saskaitos-numeris" id="" value="<?= $iban ?>" readonly >
         </div>
         <button class="new-accout-button" type="submit">+</button>
+        <input type="hidden" name="csrf" value="<?= $csrf?>">
     </form>
 <?php require __DIR__.'/bottom.php';?>
