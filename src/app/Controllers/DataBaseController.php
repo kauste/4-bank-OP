@@ -1,38 +1,55 @@
-<?php
-namespace Savers\Bank\Controllers;
-use Savers\Bank\App;
+<?php namespace Savers\Bank\Controllers;
 use Savers\Bank\DB\DataBase;
 use Savers\Bank\AccountID;
 
 class DataBaseController implements DataBase {
-    
-    public function create(array $client) : void{
-        if(!file_exists(App::CLIENTS)){
-            file_put_contents(App::CLIENTS, json_encode([]));
+    private $data, $file;
+    public function __construct ($file){
+        $this -> file = $file;
+        if(!file_exists(__DIR__.'/../../data/'.$file.'.json')){
+            file_put_contents(__DIR__.'/../../data/'.$file.'.json', json_encode([]));
+            file_put_contents(__DIR__.'/../../data/'.$file.'_id.json', 0);
         }
-        $client['suma'] = 0;
-        $id = AccountID::plusID();
-        $clients = $this -> showAll();
-        $clients[$id] = $client;
-        file_put_contents(App::CLIENTS, json_encode($clients));      
+        $this-> data = json_decode(file_get_contents(__DIR__.'/../../data/'.$file.'.json'), 1);
     }
-
-    public function update(int $userId, array $userData) : void {
-         $clients = $this -> showAll();
-         $clients[$userId]['suma'] += $userData[0];
-         file_put_contents(App::CLIENTS, json_encode($clients));
+    public function __destruct (){
+        file_put_contents(__DIR__.'/../../data/'.$this -> file.'.json', json_encode($this -> data));
     }
-    public function delete(int $userId) : void {
-        $clients = $this -> showAll();
-        unset($clients[$userId]);
-        file_put_contents(App::CLIENTS, json_encode($clients));
+    private function getId(){
+        $id = (int) file_get_contents(__DIR__.'/../../data/'.$this -> file.'_id.json');
+        $id++;
+        file_put_contents(__DIR__.'/../../data/'.$this -> file.'_id.json', $id);
+        return $id;
     }
-    public function show(int $userId) : array{
-        $clients = $this -> showAll();
-        $client = $clients[$userId];
-        return $client;
+    public function create(array $data) : void{
+        $data['id'] = $this -> getId();
+        $this -> data[] = $data;
     }
     public function showAll() : array{
-        return json_decode (file_get_contents(App::CLIENTS), 1);
+        return $this->data;
+    }
+    public function show(int $id) : array{
+        foreach($this -> data as $item){
+            if($item['id'] == $id){
+                return $item;
+            }
+        }
+        return [];
+    }
+    public function delete(int $userId) : void {
+        foreach($this -> data as $key=> $item){
+            if($item['id'] == $id){
+                unset($this->data[$key]);
+                break;
+            }
+        }
+    }
+    function update(int $id, array $data) : void{
+        foreach($this -> data as $key=> $item){
+            if($item['id'] == $id){
+                $this->data[$key] = $data;
+                break;
+            }
+        }
     }
 }

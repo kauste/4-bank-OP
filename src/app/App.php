@@ -6,18 +6,21 @@ use Savers\Bank\Controllers\CreateAccountController;
 use Savers\Bank\Controllers\AddController;
 use Savers\Bank\Controllers\SubtractController;
 use Savers\Bank\Controllers\LoginController;
+use Savers\Bank\Controllers\DataBaseController;
 use Savers\Bank\Messages;
 class App{
     const DOMAIN = 'http://savers-bank.lt';
     const CLIENTS = __DIR__.'/../data/clients.json';
     const ID = __DIR__.'/../data/id.json';
-
     private static $html;
-
+    public static $db;
+    public static $curl;
     public static function start(){
+        self::$db = new DataBaseController('clients');
         session_start();
         Messages::init();
         ob_start(); //pastatom kibira
+        $currency = self::currency();
         $uri = substr($_SERVER['REQUEST_URI'], 1);
         $uri = explode('/', $uri);
         self::route($uri);
@@ -27,13 +30,21 @@ class App{
     public static function sent(){
         echo self::$html;
     }
+    public static function currency (){
+        self::$curl = curl_init();
+        curl_setopt(self::$curl, CURLOPT_URL, 'https://api.exchangeratesapi.io/v1/convert?apiKey=sxcXpGyjpmlGnLYPXpswL83kABRLydLk&');
+        curl_setopt(self::$curl, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec(self::$curl);
+        print_r($output);
+        curl_close(self::$curl); 
+    }
     public static function view(string $name, array $data = []){ //galima i cia perkelti messages get
         extract($data);
         $messages = Messages::get();
         $uri = substr($_SERVER['REQUEST_URI'], 1);
         $uri = explode('/', $uri);
         $csrf = self::csrf(); 
-        require __DIR__.'/../views/'.$name.'.php'; //responsas butu reikalingas jei echointum
+        require __DIR__.'/../views/'.$name.'.php'; //returnas butu reikalingas jei echointum
     }
     public static function redirect($url = ''){
         header('Location:'.self::DOMAIN.'/'.$url);
@@ -93,7 +104,7 @@ class App{
             return (new SubtractController)->subtractFrom($uri[1]);
         }
         if('POST' == $m && count($uri) == 2 && $uri[0] == 'subtract'){
-            return (new SubtractController)-> subtractNow($uri[1]); //Postas ne reuter reikalas
+            return (new SubtractController)-> subtractNow($uri[1]);
         }
         return (new HomeController)-> home();//???
         

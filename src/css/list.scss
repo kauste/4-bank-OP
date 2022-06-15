@@ -1,33 +1,40 @@
 .saraso-main{
     width: 80%;
     margin-left: 10%;
-   
 }
 .saraso-keys{
     display:grid;
-    grid-template-columns: 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns:0.9fr 0.9fr 1.8fr 2.2fr 0.8fr 0.2fr 1.1fr 1.1fr 0.9fr;
+    grid-template-rows: 40px;
     margin-bottom: 10px;
 }
 .saraso-key{
     font-style: italic;
     font-size: 20px;
-    margin-left: 10px;
 }
 .saraso-vertes{
     display:grid;
-    grid-template-columns: 1fr 1fr 1.5fr 1.5fr 1fr 1fr 1fr 1fr;
+    grid-template-columns:0.9fr 0.9fr 1.8fr 2.2fr 0.8fr 0.2fr 1.1fr 1.1fr 0.8fr;
     grid-template-rows: 40px;
     margin-bottom: 10px;
     align-items: center;
 }
-.saraso-verte{
+.saraso-verte, .currency{
     border: 2px solid #999;
-    border-left: 0px;
+    border-right: 0px;
     padding:10px;
     font-size:18px
 }
-.saraso-verte:first-of-type{
+.currency{
     border: 2px solid #999;
+}
+button.currency{
+    margin-left: 15px;
+    padding:7px
+}
+button.currency:hover{
+    cursor: pointer;
+    background-color: #555;
 }
 .saraso-vertes > .saraso-sask-nr, .saraso-vertes > .saraso-AK{
     letter-spacing: 5px;

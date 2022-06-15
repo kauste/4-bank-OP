@@ -7,7 +7,6 @@ use Savers\Bank\Validations\IbanValid;
 use Savers\Bank\Validations\ValidPersonID;
 
 class CreateAccountController{
-
     public function createPage(){
         return App::view('createAccount', ['title'=> 'Create Account', 'iban' => (new IbanValid)-> validIban()]);
     }
@@ -29,10 +28,11 @@ class CreateAccountController{
         }
         if (!isset($_SESSION['msg']) && !file_exists(App::CLIENTS)){
                 Messages::add('Sąskaita pridėta.', 'no-error');
-                (new DataBaseController) -> create($client);
+                $client['suma'] = 0;
+                App::$db -> create($client);
         }
         if (!isset($_SESSION['msg']) && file_exists(App::CLIENTS)){
-            $clients = (new DataBaseController) -> showAll();
+            $clients = App::$db -> showAll();
             foreach($clients as $item){
                 if($item['asmens-kodas'] == $client['asmens-kodas']){
                     Messages::add('KLAIDA! Sąskaita nurodytu asmens kodu jau egzistuoja.', 'error');
@@ -40,9 +40,10 @@ class CreateAccountController{
                 }
             }
             Messages::add('Sąskaita pridėta.', 'no-error');
-            (new DataBaseController) -> create( $client);
+            $client['suma'] = 0;
+            App::$db -> create($client);
         }
-        return App::redirect('createAccount');     
+         return App::redirect('createAccount');     
     }
 }
 

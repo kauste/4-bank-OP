@@ -9,14 +9,15 @@ class AddController {
         return App::view('add', ['title'=> 'Add']);
     }
     public function addTo($uri){
-        $clients = (new DataBaseController) -> showAll();
-        if (array_key_exists($uri, $clients)){
-             return App::view('add', ['title'=> 'Add', 'client' => $clients[$uri]]);
+        $clients = App::$db -> showAll();
+        foreach($clients as $client){
+            if ($uri == $client['id']){
+                return App::view('add', ['title'=> 'Add', 'client' => $client]);
+           }
         }
-        else{
-            return App::view('home', ['title'=> 'home']);
-        }
+        return App::view('home', ['title'=> 'home']);
     }
+
     public function addNow($uri){
         extract($_POST);
         if(($_POST['csrf']?? '') != App::csrf()){
@@ -24,11 +25,19 @@ class AddController {
             return App::redirect('add/'.$uri);
         }
         if($amount > 0){
-            (new DataBaseController) -> update($uri, [$amount]);
-            Messages::add('Pasirinkta suma pridėta prie nurodytos sąskaitos.', 'no-error');
+            foreach((App::$db-> showAll()) as $user){
+                if($user['id'] == $uri){
+                    $user['suma'] += $amount;
+                    App::$db -> update($uri, $user);
+                    Messages::add('Pasirinkta suma pridėta prie nurodytos sąskaitos.', 'no-error');
+                    return App::redirect('add/'.$uri);
+                }
+            }
+            Messages::add('Vartotojas neegzistuoj.', 'no-error');
         } else {
             Messages::add('KLAIDA! Minusinė suma negali būti pridedama.', 'error');
         }
             return App::redirect('add/'.$uri);
+           
     }
 }

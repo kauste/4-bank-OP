@@ -6,7 +6,7 @@ use Savers\Bank\Controllers\DataBaseController;
 class AccountListController {
     public function list(){
         if(file_exists(App::CLIENTS)){
-            $list = (new DataBaseController) -> showAll();
+            $list = (new DataBaseController('clients')) -> showAll();
         } else {
             $list = [[]];
              // per if patikrinti, ar yra saskaitu views'e
@@ -18,8 +18,7 @@ class AccountListController {
             Messages::add('Ne ten pataikei', 'error');
             return App::redirect('list');
         }
-        $DBobj = (new DataBaseController);
-        $list = $DBobj -> showAll();
+        $list = App::$db -> showAll();
         if($list[$id]['suma'] == 0){
             $DBobj -> delete($id);
             Messages::add('Sąskaita ištrinta', 'no-error');

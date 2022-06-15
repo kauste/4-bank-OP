@@ -9,30 +9,38 @@ class SubtractController {
         return App::view('subtract', ['title'=> 'Subtract']);
     }
     public function subtractFrom($uri){
-        $clients = (new DataBaseController) -> showAll();
-        if(array_key_exists($uri, $clients)){
-            $client = $clients[$uri];
-            return App::view('subtract', ['title'=> 'Subtract', 'client' => $client]);
+        $clients = App::$db -> showAll();
+        foreach($clients as $client){
+            if ($uri == $client['id']){
+                return App::view('subtract', ['title'=> 'Subtract', 'client' => $client]);
+           }
         }
-        else {
-            return App::view('home', ['title'=> 'Home']);
-        }
+        return App::view('home', ['title'=> 'home']);
     }
+    
     public function subtractNow($uri){
         extract($_POST);
         if(($_POST['csrf']?? '') != App::csrf()){
             Messages::add('Ne ten pataikei', 'error');
             return App::redirect('subtract/'.$uri);
         }
-        $clients = (new DataBaseController) -> showAll();
-        if ($clients[$uri]['suma'] >= $amount && $amount > 0){
-            (new DataBaseController) -> update($uri, [-$amount]);
-            Messages::add('Pasirinkta suma nuskaičiuota nuo nurodytos sąskaitos.'. $amount, 'no-error');
-        } elseif ($amount < 0){
+        if ($amount < 0){
             Messages::add('Į skolą neduodame.', 'no-error');
-        } else {
-            Messages::add('KLAIDA!Jūs mėginate nuskaičiuoti didesnę sumą nei yra kliento sąskaitoje!', 'no-error');
+            return App::redirect('subtract/'.$uri);
         }
+        $clients = App::$db -> showAll();
+        foreach((App::$db-> showAll()) as $user){
+            if($user['id'] != $uri){
+                continue;
+            }
+            if($user['suma'] <= $amount){
+                Messages::add('KLAIDA!Jūs mėginate nuskaičiuoti didesnę sumą nei yra kliento sąskaitoje!', 'no-error');
+                break;
+            }
+            $user['suma'] -= $amount;
+            App::$db -> update($uri, $user);
+            Messages::add('Pasirinkta suma nuskaičiuota nuo nurodytos sąskaitos.', 'no-error');
+            }
         return App::redirect('subtract/'.$uri);
     }
 }

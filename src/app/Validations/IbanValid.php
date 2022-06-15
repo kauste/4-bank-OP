@@ -5,8 +5,9 @@ use Savers\Bank\App;
 
 class IbanValid {
     public function validIban(){
+        $db = new DataBaseController('clients');
         if(file_exists(App::CLIENTS)){
-            $clients = (new DataBaseController) -> showAll();
+            $clients = $db -> showAll();
             $iban = $this -> iban();
             do {
                 $shoudRepeat = 0;
