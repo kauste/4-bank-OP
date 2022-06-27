@@ -7,7 +7,7 @@ import axios from 'axios';
 import Create from './Components/Create';
 import Edit from './Components/Edit';
 import Login from './Components/Login';
-import { authConfig, login } from './Functions/auth';
+import { authConfig, login, logout } from './Functions/auth';
 
 function App() {
   const [latsUpdate, setLastUpdate] = useState(Date.now());
@@ -22,16 +22,30 @@ function App() {
   const [msg, setMsg] = useState(null);
   const [loginData, setLoginData] = useState(null);
   const [user, setUser] = useState(null);
-  // const [refresh, setRefresh] = useState(true);
+  const [refresh, setRefresh] = useState(true);
+
+  const doLogout = () => {
+    logout();
+    setRefresh(r => !r);
+  }
 
   useEffect(()=> {
-    axios.get('http://savers-bank.lt/?url=auth', authConfig())
+    axios.get('http://savers-bank.lt/auth', authConfig())
     .then(res => {
       if(res.data.user){
         setUser(res.data.user)
+        setTimeout(() =>{ // nustatome laika
+          logout();
+          setRefresh(r => !r)
+        }, 100000)
+      }
+      else {
+        setUser(null);
+        setMsg(res.data.msg);
       }
     })
-  }, [])
+  }, [refresh])
+
   useEffect(() => {
     axios.get('http://savers-bank.lt/list', authConfig())
       .then(res => {
@@ -44,10 +58,11 @@ function App() {
 
   useEffect(() => {
     if (loginData == null) return;
-    axios.post('http://savers-bank.lt/login', loginData, authConfig())
+    axios.post('http://savers-bank.lt/login', loginData)
       .then(res => {
         if (res.data.token) {
           login(res.data.token)
+          setRefresh(r => !r)
         }
         else {
           setMsg(res.data.msg)
@@ -63,7 +78,7 @@ function App() {
 
   useEffect(() => {
     if (createClient === null) return;
-    axios.post('http://savers-bank.lt/createAccount', createClient)
+    axios.post('http://savers-bank.lt/createAccount', createClient, authConfig())
       .then(res => {
         setMsg(res.data.msg)
         setLastUpdate(Date.now())
@@ -98,21 +113,21 @@ function App() {
 
   useEffect(() => {
     if (delClient === null) return;
-    axios.delete('http://savers-bank.lt/list/' + delClient.id)
+    axios.delete('http://savers-bank.lt/list/' + delClient.id, authConfig())
       .then(_ => setLastUpdate(Date.now()))
   }, [delClient]);
 
   
   return (
     <DataContext.Provider value={{ list, setCreateClient, setDelClient, editClient, setEditClient, saskaitosNr, setAddMoney, setWithdrowMoney, createModal, setCreateModal, msg, setMsg, setLoginData }}>
-
-      <h1 style={{ backgroundColor: 'orangered', padding: '20px' }} >
-        Savers Bank
-      </h1>
+      <nav className="savers-bank">
+        <h1>Savers Bank</h1>
+        <button className="list-btn btn btn-secondary" onClick={doLogout}>Atsijungti</button>
+      </nav>
       <div className="container ">
         <div className="row flex-column">
           {
-            user ? <List/> : <Login/>
+            user ? <List user={user}/> : <Login/>
           } 
         </div>
       </div>

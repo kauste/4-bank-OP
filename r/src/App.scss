@@ -61,3 +61,17 @@
 .error-msg, .no-error-msg {
   color:orangered;
 }
+.greetings{
+  font-weight: 300;
+  color: green;
+  font-style: italic;
+}
+.savers-bank{
+  width: 100%;
+  height: 90px;
+  background: orangered;
+  padding: 20px;
+  display:flex;
+  justify-content: space-between;
+  border-radius: 0 0 7px 7px;
+}

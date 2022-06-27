@@ -3,7 +3,7 @@ import DataContext from "./DataContext";
 import ListLine from "./ListLine";
 
 
-function List() {
+function List({user}) {
     const { list, setCreateModal } = useContext(DataContext);
   
 
@@ -14,6 +14,7 @@ function List() {
     return (
         <div className="col-12 mt-5">
             <div className="card">
+                <span className="greetings">Sveiki, {user.full_name}, malonaus darbo!</span>
                 <div className="card-header">
                     <h2>Klientų sąrašas</h2>
                 </div>

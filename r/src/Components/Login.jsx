@@ -12,7 +12,7 @@ function Login() {
     return (
         <>
             <form className="login-form">
-                <div className="error-msg">{msg}</div>
+                <div className="error-msg">{msg ?? null}</div>
                 <div className="form-group">
                     <label for="exampleInputEmail1">Prisijungimo vardas</label>
                     <input type="email" className="form-control" value={name} onChange={e => setName(e.target.value)}/>

@@ -21,7 +21,6 @@ class App{
     
     public static function start(){
         if($_SERVER['REQUEST_METHOD'] === 'OPTIONS'){
-            header('Content-Type: application/json');
             header('Access-Control-Allow-Origin: *'); 
             header('Access-Control-Allow-Methods: GET, PUT, POST, DELETE, OPTIONS');
             header("Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With");
@@ -167,7 +166,7 @@ class App{
              echo json_encode(['msg' => 'Pateikti klaidingi duomenys.']);
             // 
         }
-        if($_GET['url'] == 'auth'){
+        if('GET' == $m && count($uri) == 1 && $uri[0] == 'auth'){
             $user = self::getUser();
             if($user){
                 $out = json_encode(['user'=> $user]);
