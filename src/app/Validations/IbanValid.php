@@ -1,18 +1,18 @@
 <?php
 namespace Savers\Bank\Validations;
-use Savers\Bank\Controllers\DataBaseController;
+use Savers\Bank\DB\JsonDB;
 use Savers\Bank\App;
 
 class IbanValid {
     public function validIban(){
-        $db = new DataBaseController('clients');
+        $db = new JsonDB('clients');
         if(file_exists(App::CLIENTS)){
             $clients = $db -> showAll();
             $iban = $this -> iban();
             do {
                 $shoudRepeat = 0;
                 foreach($clients as $client){
-                    if($client['saskaitos-numeris'] == $iban){
+                    if($client['saskaitosNr'] == $iban){
                         $shoudRepeat = 1;
                         break;
                     }

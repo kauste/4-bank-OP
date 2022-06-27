@@ -1,8 +1,8 @@
-<?php namespace Savers\Bank\Controllers;
+<?php namespace Savers\Bank\DB;
 use Savers\Bank\DB\DataBase;
 use Savers\Bank\AccountID;
 
-class DataBaseController implements DataBase {
+class JsonDB implements DataBase {
     private $data, $file;
     public function __construct ($file){
         $this -> file = $file;
@@ -36,10 +36,11 @@ class DataBaseController implements DataBase {
         }
         return [];
     }
-    public function delete(int $userId) : void {
+    public function delete(int $id) : void {
         foreach($this -> data as $key=> $item){
             if($item['id'] == $id){
                 unset($this->data[$key]);
+                $this -> data = array_values($this -> data);
                 break;
             }
         }
@@ -47,6 +48,7 @@ class DataBaseController implements DataBase {
     function update(int $id, array $data) : void{
         foreach($this -> data as $key=> $item){
             if($item['id'] == $id){
+                $data['id'] = $id;
                 $this->data[$key] = $data;
                 break;
             }

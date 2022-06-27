@@ -28,8 +28,12 @@
 .currency{
     border: 2px solid #999;
 }
-button.currency{
-    margin-left: 15px;
+.saraso-keys-form{
+    height: 40px;
+    display:flex;
+}
+input.currency{
+    margin-left: 10px;
     padding:7px
 }
 button.currency:hover{

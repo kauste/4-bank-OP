@@ -2,7 +2,8 @@
 namespace Savers\Bank\Controllers;
 use Savers\Bank\App;
 use Savers\Bank\Messages;
-use Savers\Bank\Controllers\DataBaseController;
+use Savers\Bank\DB\JsonDB;
+use Savers\Bank\Services\CurrencyService;
 
 class AddController {
     public function add(){
@@ -19,25 +20,34 @@ class AddController {
     }
 
     public function addNow($uri){
-        extract($_POST);
-        if(($_POST['csrf']?? '') != App::csrf()){
-            Messages::add('Ne ten pataikei', 'error');
-            return App::redirect('add/'.$uri);
-        }
+        $client = file_get_contents("php://input"); // cia vietoj $_POST
+        $client = json_decode($client, 1);
+        extract($client);
+        // extract($_POST);
+        // if(($_POST['csrf']?? '') != App::csrf()){
+        //     Messages::add('Ne ten pataikei', 'error');
+        //     return App::redirect('add/'.$uri);
+        // }
         if($amount > 0){
             foreach((App::$db-> showAll()) as $user){
                 if($user['id'] == $uri){
-                    $user['suma'] += $amount;
+                    // $curr = CurrencyService::currencyGet();
+                    $user['suma'] += $amount;//  / $curr['currValue']
                     App::$db -> update($uri, $user);
-                    Messages::add('Pasirinkta suma pridėta prie nurodytos sąskaitos.', 'no-error');
-                    return App::redirect('add/'.$uri);
+                    $out = ['msg' => 'Pasirinkta suma pridėta prie nurodytos sąskaitos', 'user' =>  $user];
+                    // Messages::add('Pasirinkta suma pridėta prie nurodytos sąskaitos.', 'no-error');
+                    // return App::redirect('add/'.$uri);
                 }
             }
-            Messages::add('Vartotojas neegzistuoj.', 'no-error');
+            // $out = ['msg' => 'KLAIDA'];
+            // Messages::add('Vartotojas neegzistuoj.', 'error');
         } else {
-            Messages::add('KLAIDA! Minusinė suma negali būti pridedama.', 'error');
+            $out = ['msg' => 'KLAIDA! Minusinė suma negali būti pridedama.'];
+            // Messages::add('KLAIDA! Minusinė suma negali būti pridedama.', 'error');
         }
-            return App::redirect('add/'.$uri);
+            // return App::redirect('add/'.$uri);
+            $out = json_encode($out);
+            echo $out;
            
     }
 }

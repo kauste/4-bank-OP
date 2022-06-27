@@ -2,7 +2,7 @@
 namespace Savers\Bank\Controllers;
 use Savers\Bank\App;
 use Savers\Bank\Messages;
-use Savers\Bank\Controllers\DataBaseController;
+use Savers\Bank\DB\JsonDB;
 class LoginController {
     public function showLogin(){
         return App::view('login', ['title'=> 'login']);
@@ -12,7 +12,7 @@ class LoginController {
             Messages::add('Ne ten pataikei', 'error');
             return App::redirect('login');
         }
-        $users = (new DataBaseController) -> showAll();
+        $users = (new JsonDB) -> showAll();
         foreach($users as $user){
             if($_POST['name'] != $user -> name){
                 continue;

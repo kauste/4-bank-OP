@@ -8,8 +8,9 @@
                 <div class="saraso-key saraso-AK">Asmens kodas</div>
                 <div class="saraso-key saraso-sask-nr">Sąskaitos numeris</div>
                 <div class="saraso-key saraso-sask-likutis">Sąskaitos likutis</div>
-                <form action="" method="post">
-                    <button type="submit" class="currency">EUR</button>
+                <form class="saraso-keys-form"action="" method="post">
+                    <input type="text" class="currency" name="currency"></input>
+                    <button type="submit">Choose currency</button>
                 </form>
                 
             </div>
@@ -19,8 +20,8 @@
                     <div class="saraso-verte saraso-pavarde"><?= $item['pavarde'] ?></div>
                     <div class="saraso-verte saraso-AK"><?= $item['asmens-kodas'] ?></div>
                     <div class="saraso-verte saraso-sask-nr"><?= $item['saskaitos-numeris'] ?></div>
-                    <div class="saraso-verte saraso-sask-likutis"><?= $item['suma'] ?></div>
-                    <span class="currency">EUR</span>
+                    <div class="saraso-verte saraso-sask-likutis"><?= round($item['suma'] * ($curr['currValue']), 2) ?></div>
+                    <span class="currency"><?= $curr['curr'] ?></span>
                     <a class="prideti-lesu" href="<?= self::DOMAIN . '/add/' . $item['id']?>">Pridėti lėšų</a>
                     <a class="nuskaiciuoti-lesu" href="<?= self::DOMAIN . '/subtract/' . $item['id']?>">Nuskaičiuoti lėšas</a>
                     <button type="submit">Ištrinti</button>
